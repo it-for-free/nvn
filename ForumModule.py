@@ -10,10 +10,12 @@ from PyQt4 import QtWebKit
 
 
 # Описываем дополнительное окно
-class ForumWindow(QtGui.QWidget):
+class ForumWindow(QtGui.QMainWindow):
 
     def __init__(self, parent=None):
         super(ForumWindow, self).__init__(parent)
 # запускаем метод рисующий виджеты окна
         self.ui = ForumWindowUi()
         self.ui.setupUi(self)
+    def someFunc(self, ForumWindow):
+        return

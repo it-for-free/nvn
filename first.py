@@ -10,39 +10,6 @@ from ForumModule import ForumWindow
 from PyQt4 import QtWebKit
 
 
-# Описываем дополнительное окно
-class ForumWindow(QtGui.QWidget):
-
-    def __init__(self, parent=None):
-        super(ForumWindow, self).__init__(parent)
-# запускаем метод рисующий виджеты окна
-        self.ui = ForumWindowUi()
-        self.ui.setupUi(self)
-        #self.ui.initUI()
-
-    def initUI(self):
-
-        self.setWindowTitle('Модуль форума')
-        ok = QtGui.QPushButton("OK")
-        cancel = QtGui.QPushButton("Cancel")
-
-
-        hbox = QtGui.QHBoxLayout()
-        hbox.addStretch(1)
-        hbox.addWidget(ok)
-        hbox.addWidget(cancel)
-
-        vbox = QtGui.QVBoxLayout()
-        vbox.addStretch(1)
-        vbox.addLayout(hbox)
-
-        self.setLayout(vbox)
-
-        self.resize(300, 150)
-
-
-        self.show()
-
 
 class httpWidget(QtGui.QWidget):
     # конструктор класса
