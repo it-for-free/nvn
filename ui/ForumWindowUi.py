@@ -16,10 +16,6 @@ from PyQt4 import QtCore, QtGui
 """
 class ForumWindowUi(object):
 
-#в контсрукторе получаем класс типа ForumWindow """
-    def setAccessibleName(self,name):
-        return
-
     def setupUi(self, ForumWindow):
        #self.setWindowTitle('Модуль форума')
         ok = QtGui.QPushButton("OK")
@@ -36,7 +32,7 @@ class ForumWindowUi(object):
 
         ForumWindow.setLayout(vbox)
 
-        ForumWindow.resize(300, 150)
+        ForumWindow.resize(600, 250)
 
          # описываем действие ("действие" - это понятие из QT -см. ссылки выше листинга)
 ##        exitAction = QtGui.QAction(QtGui.QIcon('exit.png'), '&Exit', self)
@@ -44,17 +40,10 @@ class ForumWindowUi(object):
 ##        exitAction.setStatusTip('Выйти изприложения')
 ##        exitAction.triggered.connect(QtGui.qApp.quit)
 
-        ForumWindow.verticalLayout = QtGui.QVBoxLayout(ForumWindow)
-        ForumWindow.verticalLayout.setObjectName("verticalLayout")
 
-        ForumWindow.horizontalLayout = QtGui.QHBoxLayout(ForumWindow)
-        ForumWindow.horizontalLayout.setObjectName("horizontalLayout")
 
-        ForumWindow.back = QtGui.QPushButton(ForumWindow)
-        ForumWindow.horizontalLayout.addWidget(ForumWindow.back)
-        ForumWindow.back.setToolTip("Вернуться на предыдущую страницу")
-        ForumWindow.back.setText("Назад")
-        ForumWindow.back.setLayoutDirection(QtCore.Qt.RightToLeft)
+
+
 
 # описываем действие ("действие" - это понятие из QT -см. ссылки выше листинга)
         exitAction = QtGui.QAction(QtGui.QIcon('exit.png'), '&Exit', ForumWindow)
@@ -90,7 +79,36 @@ class ForumWindowUi(object):
         fileMenu.addAction(newWindowAction)
         fileMenu.addAction(exitAction)
 
+
+        ForumWindow.form_widget = FormWidget()
+        ForumWindow.setCentralWidget(ForumWindow.form_widget)
+
         ForumWindow.show()
 
     def someFunc(self, ForumWindow):
         return
+
+
+class FormWidget(QWidget):
+
+    def __init__(self):
+        super(FormWidget, self).__init__()
+        self.layout = QVBoxLayout(self)
+
+        self.button1 = QPushButton("Button 1")
+        self.layout.addWidget(self.button1)
+
+        self.button2 = QPushButton("Button 2")
+        self.layout.addWidget(self.button2)
+
+##        ForumWindow.verticalLayout = QtGui.QVBoxLayout(ForumWindow)
+##        ForumWindow.verticalLayout.setObjectName("verticalLayout")
+##
+##        ForumWindow.horizontalLayout = QtGui.QHBoxLayout(ForumWindow)
+##        ForumWindow.horizontalLayout.setObjectName("horizontalLayout")
+##
+##        ForumWindow.back = QtGui.QPushButton(ForumWindow)
+##        ForumWindow.horizontalLayout.addWidget(ForumWindow.back)
+##        ForumWindow.back.setToolTip("Вернуться на предыдущую страницу")
+##        ForumWindow.back.setText("Назад")
+##        ForumWindow.back.setLayoutDirection(QtCore.Qt.RightToLeft)
