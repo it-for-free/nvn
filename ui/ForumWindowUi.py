@@ -80,6 +80,7 @@ class ForumWindowUi(object):
         fileMenu.addAction(exitAction)
 
 
+# Приклеиваем к главному окну управляющие элементы
         ForumWindow.form_widget = FormWidget()
         ForumWindow.setCentralWidget(ForumWindow.form_widget)
 
@@ -93,13 +94,42 @@ class FormWidget(QWidget):
 
     def __init__(self):
         super(FormWidget, self).__init__()
-        self.layout = QVBoxLayout(self)
 
-        self.button1 = QPushButton("Button 1")
-        self.layout.addWidget(self.button1)
+        ok = QtGui.QPushButton("OK")
+        cancel = QtGui.QPushButton("Cancel")
 
-        self.button2 = QPushButton("Button 2")
-        self.layout.addWidget(self.button2)
+        hbox = QtGui.QHBoxLayout()
+        button1 = QPushButton("Сообщение 1")
+        button2 = QPushButton("Сообщение 2")
+
+        vbox = QtGui.QVBoxLayout() #  создаёем вертикальный слой
+        vbox.addStretch(1)
+        vbox.addWidget(button1) # добавляем первую кновку в вертикальном
+# добавляем горизонтальный на вертикальный (а вместе с ним и все кнопки)
+        vbox.addLayout(hbox)
+        vbox.addWidget(button2) # добавляем на вертикальный слой  ещё кнопку
+
+
+        hbox.addStretch(1)
+        hbox.addWidget(ok)
+        hbox.addWidget(cancel)
+
+# Дальше потренируемся выводить переменное число кнопок в цикле
+
+        messages = []; # массив сообщений (текст каждого мы будем выводить на кнопке)
+
+        i = 1 # счётчик цикла
+        while i < 15: # прописываем условие
+            button = QPushButton("Сообщение " + str(i)) # (конкатенация) добавляем номер сообщения
+            messages.append(button)
+            i = i + 1
+        for m in messages:
+            vbox.addWidget(m) # добавляем на вертикальный слой  ещё кнопку
+
+
+        self.setLayout(vbox) #добвыляем вертикальный слой на форму
+
+        self.resize(600, 250)
 
 ##        ForumWindow.verticalLayout = QtGui.QVBoxLayout(ForumWindow)
 ##        ForumWindow.verticalLayout.setObjectName("verticalLayout")
