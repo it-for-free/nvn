@@ -18,7 +18,7 @@ import functools # необходимо чтобы использовать part
 class ForumWindowUi(object):
 
     def setupUi(self, ForumWindow):
-       #self.setWindowTitle('Модуль форума')
+        ForumWindow.setWindowTitle('Модуль форума')
         ok = QtGui.QPushButton("OK")
         cancel = QtGui.QPushButton("Cancel")
 
@@ -145,27 +145,23 @@ class FormWidget(QWidget):
 # это окно будет использоваться чтобы написать сообщение для форума
 class PrintMessageWindow(QWidget):
 
-    def __init__(self, parent=None):
-        super(PrintMessageWindow, self).__init__(parent)
+    def __init__(self):
+        super(PrintMessageWindow, self).__init__()
+
+        self.setWindowTitle('Набор сообщения')
+
         ok = QtGui.QPushButton("OK")
         cancel = QtGui.QPushButton("Cancel")
+        textbox = QTextEdit() # поле для ввода текста
 
         hbox = QtGui.QHBoxLayout()
         button1 = QPushButton("Сообщение 1")
         button2 = QPushButton("Сообщение 2")
 
         vbox = QtGui.QVBoxLayout() #  создаёем вертикальный слой
-        vbox.addStretch(1)
-        vbox.addWidget(button1) # добавляем первую кновку в вертикальном
-# добавляем горизонтальный на вертикальный (а вместе с ним и все кнопки)
-        vbox.addLayout(hbox)
-        vbox.addWidget(button2) # добавляем на вертикальный слой  ещё кнопку
+        vbox.addWidget(textbox)
 
 
-        hbox.addStretch(1)
-        hbox.addWidget(ok)
-        hbox.addWidget(cancel)
-
-
+        self.setLayout(vbox) #добвыляем вертикальный слой на форму
         self.resize(450, 250)
         self.show()
