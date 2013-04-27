@@ -124,7 +124,7 @@ class FormWidget(QWidget):
             text = "Сообщение " + str(i);
             button = QPushButton(text) # (конкатенация) добавляем номер сообщения
             #button.clicked.connect(lambda: self.show_message(text)) # не катит
-            button.clicked.connect(functools.partial(self.show_message,text))
+            button.clicked.connect(functools.partial(self.show_print_message_window,text))
             messages.append(button)
             i = i + 1
         for m in messages:
@@ -139,17 +139,33 @@ class FormWidget(QWidget):
         QMessageBox.about(self, "некая подпись" ,"вы нажали на = " + text)
 
     def show_print_message_window(self, text): # text  - передаваемый параметр (текст)
-        QMessageBox.about(self, "некая подпись" ,"вы нажали на = " + text)
+        self.show_print_message_window = PrintMessageWindow()
 
 
-##        ForumWindow.verticalLayout = QtGui.QVBoxLayout(ForumWindow)
-##        ForumWindow.verticalLayout.setObjectName("verticalLayout")
-##
-##        ForumWindow.horizontalLayout = QtGui.QHBoxLayout(ForumWindow)
-##        ForumWindow.horizontalLayout.setObjectName("horizontalLayout")
-##
-##        ForumWindow.back = QtGui.QPushButton(ForumWindow)
-##        ForumWindow.horizontalLayout.addWidget(ForumWindow.back)
-##        ForumWindow.back.setToolTip("Вернуться на предыдущую страницу")
-##        ForumWindow.back.setText("Назад")
-##        ForumWindow.back.setLayoutDirection(QtCore.Qt.RightToLeft)
+# это окно будет использоваться чтобы написать сообщение для форума
+class PrintMessageWindow(QWidget):
+
+    def __init__(self, parent=None):
+        super(PrintMessageWindow, self).__init__(parent)
+        ok = QtGui.QPushButton("OK")
+        cancel = QtGui.QPushButton("Cancel")
+
+        hbox = QtGui.QHBoxLayout()
+        button1 = QPushButton("Сообщение 1")
+        button2 = QPushButton("Сообщение 2")
+
+        vbox = QtGui.QVBoxLayout() #  создаёем вертикальный слой
+        vbox.addStretch(1)
+        vbox.addWidget(button1) # добавляем первую кновку в вертикальном
+# добавляем горизонтальный на вертикальный (а вместе с ним и все кнопки)
+        vbox.addLayout(hbox)
+        vbox.addWidget(button2) # добавляем на вертикальный слой  ещё кнопку
+
+
+        hbox.addStretch(1)
+        hbox.addWidget(ok)
+        hbox.addWidget(cancel)
+
+
+        self.resize(450, 250)
+        self.show()
