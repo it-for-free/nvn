@@ -8,6 +8,7 @@ from PyQt4 import QtGui
 # следующее  - импортируется для работы со слотами
 from PyQt4.QtCore import QObject, pyqtSlot
 from PyQt4 import QtCore, QtGui
+import functools # необходимо чтобы использовать partial
 
 """
 класс который мы опишем ниже
@@ -120,7 +121,10 @@ class FormWidget(QWidget):
 
         i = 1 # счётчик цикла
         while i < 15: # прописываем условие
-            button = QPushButton("Сообщение " + str(i)) # (конкатенация) добавляем номер сообщения
+            text = "Сообщение " + str(i);
+            button = QPushButton(text) # (конкатенация) добавляем номер сообщения
+            #button.clicked.connect(lambda: self.show_message(text)) # не катит
+            button.clicked.connect(functools.partial(self.show_message,text))
             messages.append(button)
             i = i + 1
         for m in messages:
@@ -130,6 +134,13 @@ class FormWidget(QWidget):
         self.setLayout(vbox) #добвыляем вертикальный слой на форму
 
         self.resize(600, 250)
+
+    def show_message(self, text): # text  - передаваемый параметр (текст)
+        QMessageBox.about(self, "некая подпись" ,"вы нажали на = " + text)
+
+    def show_print_message_window(self, text): # text  - передаваемый параметр (текст)
+        QMessageBox.about(self, "некая подпись" ,"вы нажали на = " + text)
+
 
 ##        ForumWindow.verticalLayout = QtGui.QVBoxLayout(ForumWindow)
 ##        ForumWindow.verticalLayout.setObjectName("verticalLayout")
