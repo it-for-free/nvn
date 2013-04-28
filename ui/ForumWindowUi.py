@@ -152,7 +152,16 @@ class PrintMessageWindow(QWidget):
 
         ok = QtGui.QPushButton("OK")
         cancel = QtGui.QPushButton("Cancel")
+
         textbox = QTextEdit() # поле для ввода текста
+
+        ac = QtGui.QAction("Insert AAA", textbox) # определяем действие
+        ac.setShortcut(QtGui.QKeySequence("Ctrl+Space")) # определяем "горячую" комбинацию
+        textbox.addAction(ac) # подключаем действие к полю ввода
+        text = "текстовый параметр"
+        # ниже прицепляем к действиею функцию вывода сообщения + можем указат
+        # конкретный параметр  - который будет использован при вызове функции
+        ac.triggered.connect(functools.partial(FormWidget.show_message, self, "текстовый параметр"))
 
         hbox = QtGui.QHBoxLayout()
         button1 = QPushButton("Сообщение 1")
@@ -165,3 +174,17 @@ class PrintMessageWindow(QWidget):
         self.setLayout(vbox) #добвыляем вертикальный слой на форму
         self.resize(450, 250)
         self.show()
+
+class MyTextEdit(QtGui.QTextEdit):
+    def __init__(self,):
+        QtGui.QTextEdit.__init__(self)
+        self.ctrlIsPressed = False
+    def keyPressEvent(self, event):
+        #FormWidget.show_print_message_window(self, "123")
+        if self.ctrlIsPressed:
+        # и вот тут надо что то написать, что б курсор передвинулся
+        # наверное либо сэмулировать нажатие стрелочки
+        # либо как то програмно передвинуть курсор
+            FormWidget.show_message(self, '123')
+        else:
+            QtGui.QTextEdit.keyPressEvent(self, event)
