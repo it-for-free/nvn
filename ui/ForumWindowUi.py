@@ -96,31 +96,31 @@ class FormWidget(QWidget):
     def __init__(self):
         super(FormWidget, self).__init__()
 
-        ok = QtGui.QPushButton("OK")
-        cancel = QtGui.QPushButton("Cancel")
+      #  ok = QtGui.QPushButton("OK")
+      #  cancel = QtGui.QPushButton("Cancel")
 
         hbox = QtGui.QHBoxLayout()
-        button1 = QPushButton("Сообщение 1")
-        button2 = QPushButton("Сообщение 2")
+       # button1 = QPushButton("Сообщение 1")
+       # button2 = QPushButton("Сообщение 2")
 
         vbox = QtGui.QVBoxLayout() #  создаёем вертикальный слой
         vbox.addStretch(1)
-        vbox.addWidget(button1) # добавляем первую кновку в вертикальном
+       # vbox.addWidget(button1) # добавляем первую кновку в вертикальном
 # добавляем горизонтальный на вертикальный (а вместе с ним и все кнопки)
         vbox.addLayout(hbox)
-        vbox.addWidget(button2) # добавляем на вертикальный слой  ещё кнопку
+       # vbox.addWidget(button2) # добавляем на вертикальный слой  ещё кнопку
 
 
         hbox.addStretch(1)
-        hbox.addWidget(ok)
-        hbox.addWidget(cancel)
+       # hbox.addWidget(ok)
+      #  hbox.addWidget(cancel)
 
 # Дальше потренируемся выводить переменное число кнопок в цикле
 
         messages = []; # массив сообщений (текст каждого мы будем выводить на кнопке)
 
         i = 1 # счётчик цикла
-        while i < 15: # прописываем условие
+        while i < 5: # прописываем условие
             text = "Сообщение " + str(i);
             button = QPushButton(text) # (конкатенация) добавляем номер сообщения
             #button.clicked.connect(lambda: self.show_message(text)) # не катит
@@ -131,21 +131,39 @@ class FormWidget(QWidget):
             vbox.addWidget(m) # добавляем на вертикальный слой  ещё кнопку
 
 
+        self.vbox = vbox
         self.setLayout(vbox) #добвыляем вертикальный слой на форму
 
         self.resize(600, 250)
 
-    def show_message(self, text): # text  - передаваемый параметр (текст)
+    # fwindow   - дескриптор главного окна форума
+    def show_message(self, fwindow, text): # text  - передаваемый параметр (текст)
         QMessageBox.about(self, "некая подпись" ,"вы нажали на = " + text)
 
+        vbox = QtGui.QVBoxLayout() #  создаёем вертикальный слой
+        b2 = QPushButton(text);
+        vbox.addWidget(b2)
+
+        fwindow.setLayout(vbox)
+
+        #for i in range(fwindow.vbox.count()): fwindow.vbox.itemAt(i).widget().close()
+
+        for i in reversed(range(fwindow.vbox.count())):
+            if fwindow.vbox.itemAt(i).widget() != None: # проверяем, что значение определено
+                fwindow.vbox.itemAt(i).widget().setParent(None)
+        b2 = QPushButton(text);
+        fwindow.vbox.addWidget(b2)
+    #def add_message(fwindow, ):
+
+
     def show_print_message_window(self, text): # text  - передаваемый параметр (текст)
-        self.show_print_message_window = PrintMessageWindow()
+        self.show_print_message_window = PrintMessageWindow(self)
 
 
 # это окно будет использоваться чтобы написать сообщение для форума
 class PrintMessageWindow(QWidget):
 
-    def __init__(self):
+    def __init__(self, fwindow):
         super(PrintMessageWindow, self).__init__()
 
         self.setWindowTitle('Набор сообщения')
@@ -161,8 +179,8 @@ class PrintMessageWindow(QWidget):
         text = "текстовый параметр"
         # ниже прицепляем к действиею функцию вывода сообщения + можем указат
         # конкретный параметр  - который будет использован при вызове функции
-        ac.triggered.connect(functools.partial(FormWidget.show_message, self, "текстовый параметр"))
-
+        #ac.triggered.connect(functools.partial(FormWidget.show_message, self, textbox.toPlainText()))
+        ac.triggered.connect(lambda: FormWidget.show_message (self, fwindow, textbox.toPlainText()))
         hbox = QtGui.QHBoxLayout()
         button1 = QPushButton("Сообщение 1")
         button2 = QPushButton("Сообщение 2")
