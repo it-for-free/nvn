@@ -5,7 +5,7 @@ from PyQt4 import QtCore, QtGui
 
 from ui.httpWidget import Ui_HttpWidget
 from ui.ForumWindowUi import ForumWindowUi
-from ForumModule import ForumWindow
+from ForumModule import ForumWindow, ForumDataManager
 
 from PyQt4 import QtWebKit
 
@@ -146,9 +146,10 @@ class httpWidget(QtGui.QWidget):
 # с помощью декоратора указываем, что данный метод
 # является слотом
  # @pyqtSlot()
-  def addwindow(self):
+  def addwindow(self): # ВЫЗЫВАЕМ ОКНО ФОРУМА
       #""" C++: void foo() """
-      self.addwin = ForumWindow()
+      #self.addwin = ForumWindow()
+      self.addwin = ForumDataManager()
 
 # точка входа в программу
 if __name__ == "__main__":

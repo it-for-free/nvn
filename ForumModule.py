@@ -8,15 +8,18 @@ from ui.ForumWindowUi import ForumWindowUi
 
 from PyQt4 import QtWebKit
 
-
-# Описываем дополнительное окно
+# ForumWindow  - лишь один из примеров
+# Возможной реализации графического интерфейся для
+# ForumDataManager
 class ForumWindow(QtGui.QMainWindow):
 
-    def __init__(self, parent=None):
-        super(ForumWindow, self).__init__(parent)
+# dmanager - дескриптор ForumDataManager
+# необходим для привязки сигналов к слотам
+    def __init__(self, dmanager):
+        super(ForumWindow, self).__init__()
 # запускаем метод рисующий виджеты окна
         self.ui = ForumWindowUi()
-        self.ui.setupUi(self)
+        self.ui.setupUi(self, dmanager)
     def someFunc(self, ForumWindow):
         return
     def getMessages():
@@ -28,12 +31,16 @@ class ForumWindow(QtGui.QMainWindow):
 # драйвером для CMS Drupal 7)
 class ForumDataManager:
 
-    def getMessagesForThread(): #возвращает массив сообщений
+    def __init__(self, parent=None):
+         self.ui = ForumWindow(self)
+
+    def getMessagesForThread(self): #возвращает массив сообщений
         messages = []; # массив сообщений (текст каждого мы будем выводить на кнопке)
 
         i = 1 # счётчик цикла
         while i < 5: # прописываем условие
             mess = ForumMessage("Сообщение " + str(i))
+            messages.append(mess) # добавляем элемент
             i = i + 1
         return messages
 

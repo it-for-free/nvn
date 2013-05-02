@@ -17,7 +17,7 @@ import functools # необходимо чтобы использовать part
 """
 class ForumWindowUi(object):
 
-    def setupUi(self, ForumWindow):
+    def setupUi(self, ForumWindow, dmanager):
         ForumWindow.setWindowTitle('Модуль форума')
         ok = QtGui.QPushButton("OK")
         cancel = QtGui.QPushButton("Cancel")
@@ -82,7 +82,7 @@ class ForumWindowUi(object):
 
 
 # Приклеиваем к главному окну управляющие элементы
-        ForumWindow.form_widget = FormWidget()
+        ForumWindow.form_widget = FormWidget(dmanager)
         ForumWindow.setCentralWidget(ForumWindow.form_widget)
 
         ForumWindow.show()
@@ -93,7 +93,7 @@ class ForumWindowUi(object):
 
 class FormWidget(QWidget):
 
-    def __init__(self):
+    def __init__(self, dmanager):
         super(FormWidget, self).__init__()
 
       #  ok = QtGui.QPushButton("OK")
@@ -101,7 +101,7 @@ class FormWidget(QWidget):
 
         hbox = QtGui.QHBoxLayout()
        # button1 = QPushButton("Сообщение 1")
-       # button2 = QPushButton("Сообщение 2")
+       # button2 = QPushButton("Сообщение 2") программа дял общения слепых людей
 
         vbox = QtGui.QVBoxLayout() #  создаёем вертикальный слой
         vbox.addStretch(1)
@@ -146,9 +146,18 @@ class FormWidget(QWidget):
             button.clicked.connect(functools.partial(self.show_print_message_window,text))
             messages.append(button)
             i = i + 1
-        #messages =   ForumDataManager.getMessagesForThread
+        messages =   dmanager.getMessagesForThread()
 
+        buttons = [];
         for m in messages:
+            button = QPushButton(m.text) # (конкатенация) добавляем номер сообщения
+            #button.clicked.connect(lambda: self.show_message(text)) # не катит
+            button.clicked.connect(functools.partial(self.show_print_message_window,text))
+            buttons.append(button)
+            #vbox.addWidget(m) # добавляем на вертикальный слой  ещё кнопку
+            self.scrollLayout.addRow(button)
+
+        for m in buttons:
             #vbox.addWidget(m) # добавляем на вертикальный слой  ещё кнопку
             self.scrollLayout.addRow(m)
 
