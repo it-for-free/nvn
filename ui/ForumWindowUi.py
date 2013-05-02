@@ -117,18 +117,40 @@ class FormWidget(QWidget):
 
 # Дальше потренируемся выводить переменное число кнопок в цикле
 
+
+
+        # определяем содержимое виджета прокрутки
+        #  - а именно слой формата (QFormLayout) - два столбца
+        self.scrollLayout = QtGui.QFormLayout()
+
+        # добавляем  ране созданный слой прокрутки
+        # на виджет прокрутки
+        self.scrollWidget = QtGui.QWidget() # cначала создаём сам виджет
+        self.scrollWidget.setLayout(self.scrollLayout) # добавляем на него слой
+
+        # определяем область механизм прокрутки (QScrollArea)
+        self.scrollArea = QtGui.QScrollArea()
+        self.scrollArea.setWidgetResizable(True) #разрешаем проктурку
+        #добавляем на область виджет, с ранее добавленным на него слоем слоем
+        self.scrollArea.setWidget(self.scrollWidget)
+
+        vbox.addWidget(self.scrollArea) # добавляем область прокрутки
+
         messages = []; # массив сообщений (текст каждого мы будем выводить на кнопке)
 
         i = 1 # счётчик цикла
-        while i < 5: # прописываем условие
+        while i < 15: # прописываем условие
             text = "Сообщение " + str(i);
             button = QPushButton(text) # (конкатенация) добавляем номер сообщения
             #button.clicked.connect(lambda: self.show_message(text)) # не катит
             button.clicked.connect(functools.partial(self.show_print_message_window,text))
             messages.append(button)
             i = i + 1
+        #messages =   ForumDataManager.getMessagesForThread
+
         for m in messages:
-            vbox.addWidget(m) # добавляем на вертикальный слой  ещё кнопку
+            #vbox.addWidget(m) # добавляем на вертикальный слой  ещё кнопку
+            self.scrollLayout.addRow(m)
 
 
         self.vbox = vbox
