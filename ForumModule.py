@@ -25,10 +25,26 @@ class ForumWindow(QtGui.QMainWindow):
     def getMessages():
         return ForumDataManager.getMessagesForThread()
 
+    def clear_messages_block(self):
+        self.ui.clear_messages_block()
+
+    def print_messages(self, messages):
+        self.clear_messages_block()
+        self.ui.print_messages(messages)
+
+    def update_message_list(self, messages):
+        self.clear_messages_block()
+        self.ui.print_messages(messages)
+
+    def stop_new_message(self):
+        self.ui.close_print_message_window()
+
 # Это ОСНОВНОЙ класс, реализующий вызовы, необходимые для
 # обмена данными с сервером - именно к этому классу следует обращаться
 # при написании нового Web CMS-драйвера (аналагично с реализованным
 # драйвером для CMS Drupal 7)
+# данный класс должен реализовывать только универсальные функции
+#  ни в коем случае не привязываясь к конктретному графическому представлению
 class ForumDataManager:
 
     def __init__(self, parent=None):
@@ -51,19 +67,22 @@ class ForumDataManager:
         self.updateMessageList()
 
     def addMessage(self, text): # пока что просто принимаем текст
+        self.ui.stop_new_message # сигнал завершения(напр. можно закрыть окно ввода)
         mess = ForumMessage(text)
         self.messages.append(mess) # добавляем элемент
 
+
     def updateMessageList(self):
-        self.clear()
+        #self.clear()
         self.printMessages()
+        return
 
     def printMessages(self):
-        self.ui.ui.print_messages(self.messages)
+        self.ui.print_messages(self.messages)
 
-    def clear(self): # очищает прокручивающееся поле блока сообщений
-        self.ui.ui.clear_messages_block()
-
+    def clear(self): # не используется
+        #self.ui.clear_messages_block()
+        return
 
 
 """ класс (универсальный  -его следует использовать независимо

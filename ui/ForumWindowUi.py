@@ -107,6 +107,8 @@ class ForumWindowUi(object):
        # for m in buttons:
             #vbox.addWidget(m) # добавляем на вертикальный слой  ещё кнопку
            # layout.addRow(m)
+    def close_print_message_window(self):
+        self.form_widget.close_print_message_window()
 
 
 
@@ -210,7 +212,7 @@ class FormWidget(QWidget):
     def show_print_message_window(self): # text  - передаваемый параметр (текст)
         self.print_message_window = PrintMessageWindow(self, self.dmanager)
     def close_print_message_window(self):
-        self.print_message_window.__init__destroy()
+        return
 
 
 # это окно будет использоваться чтобы написать сообщение для форума
@@ -230,12 +232,9 @@ class PrintMessageWindow(QWidget):
         ac.setShortcut(QtGui.QKeySequence("Ctrl+Space")) # определяем "горячую" комбинацию
         textbox.addAction(ac) # подключаем действие к полю ввода
         text = "текстовый параметр"
-        # ниже прицепляем к действиею функцию вывода сообщения + можем указат
-        # конкретный параметр  - который будет использован при вызове функции
-        #ac.triggered.connect(functools.partial(FormWidget.show_message, self, textbox.toPlainText()))
-       # ac.triggered.connect(lambda: FormWidget.show_message (self, fwindow, textbox.toPlainText()))
-        ac.triggered.connect(lambda: dmanager.newMessage(textbox.toPlainText()))
-        #ac.triggered.connect(self.destroy)
+
+        ac.triggered.connect(lambda: dmanager.newMessage(textbox.toPlainText())) # сначала вызываем обработчик
+        ac.triggered.connect(self.deleteLater)  # потом закрываем окно
 
         hbox = QtGui.QHBoxLayout()
         button1 = QPushButton("Сообщение 1")
@@ -245,9 +244,11 @@ class PrintMessageWindow(QWidget):
         vbox.addWidget(textbox)
 
 
+
         self.setLayout(vbox) #добвыляем вертикальный слой на форму
         self.resize(450, 250)
         self.show()
+
 
 class MyTextEdit(QtGui.QTextEdit):
     def __init__(self,):
