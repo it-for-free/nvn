@@ -33,6 +33,8 @@ class ForumDataManager:
 
     def __init__(self, parent=None):
          self.ui = ForumWindow(self)
+         # self.messages - актуальный массив блоков (его состояние) (ВАЖНО !!)
+         self.messages = self.getMessagesForThread()
 
     def getMessagesForThread(self): #возвращает массив сообщений
         messages = []; # массив сообщений (текст каждого мы будем выводить на кнопке)
@@ -43,6 +45,26 @@ class ForumDataManager:
             messages.append(mess) # добавляем элемент
             i = i + 1
         return messages
+
+    def newMessage(self, text): # обработик события появления нового сообщения (!)
+        self.addMessage(text)
+        self.updateMessageList()
+
+    def addMessage(self, text): # пока что просто принимаем текст
+        mess = ForumMessage(text)
+        self.messages.append(mess) # добавляем элемент
+
+    def updateMessageList(self):
+        self.clear()
+        self.printMessages()
+
+    def printMessages(self):
+        self.ui.ui.print_messages(self.messages)
+
+    def clear(self): # очищает прокручивающееся поле блока сообщений
+        self.ui.ui.clear_messages_block()
+
+
 
 """ класс (универсальный  -его следует использовать независимо
  от используемого сетевого драйвера и способа графического

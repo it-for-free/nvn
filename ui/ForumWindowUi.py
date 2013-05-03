@@ -16,7 +16,7 @@ import functools # необходимо чтобы использовать part
 нашего первобытного браузера
 """
 class ForumWindowUi(object):
-
+  # dmanager - класс управляющий работой модуля
     def setupUi(self, ForumWindow, dmanager):
         ForumWindow.setWindowTitle('Модуль форума')
         ok = QtGui.QPushButton("OK")
@@ -83,12 +83,31 @@ class ForumWindowUi(object):
 
 # Приклеиваем к главному окну управляющие элементы
         ForumWindow.form_widget = FormWidget(dmanager)
+        self.form_widget = ForumWindow.form_widget # запоминаем указатель для передачи обработчикам
         ForumWindow.setCentralWidget(ForumWindow.form_widget)
 
         ForumWindow.show()
 
-    def someFunc(self, ForumWindow):
-        return
+    def clear_messages_block(self):
+        layout = self.form_widget.scrollLayout
+        for i in reversed(range(layout.count())):
+            if layout.itemAt(i).widget() != None: # проверяем, что значение определено
+                layout.itemAt(i).widget().setParent(None)
+    def print_messages(self, messages):
+        layout = self.form_widget.scrollLayout
+        buttons = [];
+        for m in messages:
+            button = QPushButton(m.text) # (конкатенация) добавляем номер сообщения
+            #button.clicked.connect(lambda: self.show_message(text)) # не катит
+            button.clicked.connect(self.form_widget.show_print_message_window)
+            buttons.append(button)
+            #vbox.addWidget(m) # добавляем на вертикальный слой  ещё кнопку
+            layout.addRow(button)
+
+       # for m in buttons:
+            #vbox.addWidget(m) # добавляем на вертикальный слой  ещё кнопку
+           # layout.addRow(m)
+
 
 
 class FormWidget(QWidget):
@@ -99,19 +118,20 @@ class FormWidget(QWidget):
       #  ok = QtGui.QPushButton("OK")
       #  cancel = QtGui.QPushButton("Cancel")
 
-        hbox = QtGui.QHBoxLayout()
+       # hbox = QtGui.QHBoxLayout()
        # button1 = QPushButton("Сообщение 1")
        # button2 = QPushButton("Сообщение 2") программа дял общения слепых людей
 
+        self.dmanager = dmanager # храним указатель
         vbox = QtGui.QVBoxLayout() #  создаёем вертикальный слой
-        vbox.addStretch(1)
+      #  vbox.addStretch(1)
        # vbox.addWidget(button1) # добавляем первую кновку в вертикальном
 # добавляем горизонтальный на вертикальный (а вместе с ним и все кнопки)
-        vbox.addLayout(hbox)
+      #  vbox.addLayout(hbox)
        # vbox.addWidget(button2) # добавляем на вертикальный слой  ещё кнопку
 
 
-        hbox.addStretch(1)
+       # hbox.addStretch(1)
        # hbox.addWidget(ok)
       #  hbox.addWidget(cancel)
 
@@ -143,7 +163,7 @@ class FormWidget(QWidget):
             text = "Сообщение " + str(i);
             button = QPushButton(text) # (конкатенация) добавляем номер сообщения
             #button.clicked.connect(lambda: self.show_message(text)) # не катит
-            button.clicked.connect(functools.partial(self.show_print_message_window,text))
+            button.clicked.connect(functools.partial(self.show_print_message_window))
             messages.append(button)
             i = i + 1
         messages =   dmanager.getMessagesForThread()
@@ -152,7 +172,7 @@ class FormWidget(QWidget):
         for m in messages:
             button = QPushButton(m.text) # (конкатенация) добавляем номер сообщения
             #button.clicked.connect(lambda: self.show_message(text)) # не катит
-            button.clicked.connect(functools.partial(self.show_print_message_window,text))
+            button.clicked.connect(functools.partial(self.show_print_message_window))
             buttons.append(button)
             #vbox.addWidget(m) # добавляем на вертикальный слой  ещё кнопку
             self.scrollLayout.addRow(button)
@@ -179,22 +199,24 @@ class FormWidget(QWidget):
 
         #for i in range(fwindow.vbox.count()): fwindow.vbox.itemAt(i).widget().close()
 
-        for i in reversed(range(fwindow.vbox.count())):
-            if fwindow.vbox.itemAt(i).widget() != None: # проверяем, что значение определено
-                fwindow.vbox.itemAt(i).widget().setParent(None)
+        for i in reversed(range(fwindow.scrollLayout.count())):
+            if fwindow.scrollLayout.itemAt(i).widget() != None: # проверяем, что значение определено
+                fwindow.scrollLayout.itemAt(i).widget().setParent(None)
         b2 = QPushButton(text);
-        fwindow.vbox.addWidget(b2)
+        fwindow.scrollLayout.addWidget(b2)
     #def add_message(fwindow, ):
 
 
-    def show_print_message_window(self, text): # text  - передаваемый параметр (текст)
-        self.show_print_message_window = PrintMessageWindow(self)
+    def show_print_message_window(self): # text  - передаваемый параметр (текст)
+        self.print_message_window = PrintMessageWindow(self, self.dmanager)
+    def close_print_message_window(self):
+        self.print_message_window.__init__destroy()
 
 
 # это окно будет использоваться чтобы написать сообщение для форума
 class PrintMessageWindow(QWidget):
 
-    def __init__(self, fwindow):
+    def __init__(self, fwindow, dmanager):
         super(PrintMessageWindow, self).__init__()
 
         self.setWindowTitle('Набор сообщения')
@@ -211,7 +233,10 @@ class PrintMessageWindow(QWidget):
         # ниже прицепляем к действиею функцию вывода сообщения + можем указат
         # конкретный параметр  - который будет использован при вызове функции
         #ac.triggered.connect(functools.partial(FormWidget.show_message, self, textbox.toPlainText()))
-        ac.triggered.connect(lambda: FormWidget.show_message (self, fwindow, textbox.toPlainText()))
+       # ac.triggered.connect(lambda: FormWidget.show_message (self, fwindow, textbox.toPlainText()))
+        ac.triggered.connect(lambda: dmanager.newMessage(textbox.toPlainText()))
+        #ac.triggered.connect(self.destroy)
+
         hbox = QtGui.QHBoxLayout()
         button1 = QPushButton("Сообщение 1")
         button2 = QPushButton("Сообщение 2")
